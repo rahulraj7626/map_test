@@ -12,7 +12,6 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Flutter Demo',
       theme: ThemeData(
-
         primarySwatch: Colors.blue,
       ),
       home: MyHomePage(title: 'Flutter Demo Home Page'),
@@ -23,7 +22,6 @@ class MyApp extends StatelessWidget {
 class MyHomePage extends StatefulWidget {
   MyHomePage({Key key, this.title}) : super(key: key);
 
-
   final String title;
 
   @override
@@ -31,20 +29,28 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-
   GoogleMapController _controller;
 
-  final CameraPosition _initialPosition = CameraPosition(target: LatLng(24.903623, 67.198367));
+  final CameraPosition _initialPosition =
+      CameraPosition(target: LatLng(24.903623, 67.198367));
 
   final List<Marker> markers = [];
 
-  addMarker(cordinate){
-
+  addMarker(cordinate) {
     int id = Random().nextInt(100);
 
-    setState(() {
-      markers.add(Marker(position: cordinate, markerId: MarkerId(id.toString())));
-    });
+    if (markers.length >= 1) {
+      setState(() {
+        markers.clear();
+        markers.add(
+            Marker(position: cordinate, markerId: MarkerId(id.toString())));
+      });
+    } else {
+      setState(() {
+        markers.add(
+            Marker(position: cordinate, markerId: MarkerId(id.toString())));
+      });
+    }
   }
 
   @override
@@ -53,22 +59,22 @@ class _MyHomePageState extends State<MyHomePage> {
       body: GoogleMap(
         initialCameraPosition: _initialPosition,
         mapType: MapType.normal,
-        onMapCreated: (controller){
+        onMapCreated: (controller) {
           setState(() {
             _controller = controller;
           });
         },
         markers: markers.toSet(),
-        onTap: (cordinate){
+        onTap: (cordinate) {
           _controller.animateCamera(CameraUpdate.newLatLng(cordinate));
           addMarker(cordinate);
         },
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: (){
-          _controller.animateCamera(CameraUpdate.zoomOut());
+        onPressed: () {
+          _controller.animateCamera(CameraUpdate.zoomIn());
         },
-        child: Icon(Icons.zoom_out),
+        child: Icon(Icons.zoom_in),
       ), // This trailing comma makes auto-formatting nicer for build methods.
     );
   }
